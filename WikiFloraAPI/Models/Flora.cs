@@ -6,7 +6,7 @@
         public required string banglaName { get; set; }
         public required string englishName { get; set; }
         public required ScientificName ScientificName { get; set; }
-        public required List<string> othersName { get; set; }
+        public required string othersName { get; set; }
         public required string description { get; set; }
         public required string contributer { get; set; }
         public required FloraPhoto floraPhoto { get; set; }

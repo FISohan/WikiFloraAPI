@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using WikiFloraAPI.Models;
 
 namespace WikiFloraAPI.Data
 {
@@ -6,12 +7,14 @@ namespace WikiFloraAPI.Data
     {        
         protected readonly IConfiguration _configuration;
 
-        public DataContext(DbContextOptions<DataContext> options,IConfiguration configuration) : base(options) { _configuration=configuration }
+        public DataContext(DbContextOptions<DataContext> options,IConfiguration configuration)
+            : base(options) { _configuration = configuration; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlite();
+            optionsBuilder.UseSqlite(_configuration.GetConnectionString("sqliteConnectionString"));
             base.OnConfiguring(optionsBuilder);
         }
-
+        public DbSet<Flora>Floras { get; set; }
+        public DbSet<FloraPhoto> FloraPhoto { get; set; }
     }
 }

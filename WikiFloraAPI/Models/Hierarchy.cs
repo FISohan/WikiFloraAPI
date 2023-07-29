@@ -5,6 +5,7 @@ namespace WikiFloraAPI.Models
     public class Hierarchy
     {
         
+        public Guid Id { get; set; }
         public required string kingdom { get; set; }
         public required string family { get; set; }
         public required string order { get; set; }
