@@ -11,8 +11,8 @@ using WikiFloraAPI.Data;
 namespace WikiFloraAPI.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230727154402_AddFloraAndFloraPhoto")]
-    partial class AddFloraAndFloraPhoto
+    [Migration("20230730075241_FloraAndFloraDataRalation")]
+    partial class FloraAndFloraDataRalation
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -26,42 +26,23 @@ namespace WikiFloraAPI.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid>("ScientificNameId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("banglaName")
+                    b.Property<string>("BanglaName")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("contributer")
+                    b.Property<string>("Contributer")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("description")
+                    b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("englishName")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<Guid>("floraPhotoId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<Guid>("hierarchyId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("othersName")
+                    b.Property<string>("OthersName")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ScientificNameId");
-
-                    b.HasIndex("floraPhotoId");
-
-                    b.HasIndex("hierarchyId");
 
                     b.ToTable("Floras");
                 });
@@ -72,20 +53,18 @@ namespace WikiFloraAPI.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid>("coverPhotoUrlId")
+                    b.Property<Guid>("CoverPhotoUrlId")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("floraId")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("floraName")
-                        .IsRequired()
+                    b.Property<Guid>("FloraId")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("coverPhotoUrlId");
+                    b.HasIndex("CoverPhotoUrlId");
+
+                    b.HasIndex("FloraId")
+                        .IsUnique();
 
                     b.ToTable("FloraPhoto");
                 });
@@ -96,31 +75,37 @@ namespace WikiFloraAPI.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("bionomialName")
+                    b.Property<string>("BionomialName")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("family")
+                    b.Property<string>("Family")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("genus")
+                    b.Property<Guid>("FloraId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Genus")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("kingdom")
+                    b.Property<string>("Kingdom")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("order")
+                    b.Property<string>("Order")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("species")
+                    b.Property<string>("Species")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("FloraId")
+                        .IsUnique();
 
                     b.ToTable("Hierarchy");
                 });
@@ -131,14 +116,25 @@ namespace WikiFloraAPI.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("Credit")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("FloraId")
+                        .HasColumnType("TEXT");
+
                     b.Property<Guid?>("FloraPhotoId")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("url")
+                    b.Property<string>("Reference")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Url")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("FloraId");
 
                     b.HasIndex("FloraPhotoId");
 
@@ -151,67 +147,94 @@ namespace WikiFloraAPI.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("genus")
+                    b.Property<Guid>("FloraId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Genus")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("specificEpithet")
+                    b.Property<string>("SpecificEpithet")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("FloraId")
+                        .IsUnique();
+
                     b.ToTable("ScientificName");
-                });
-
-            modelBuilder.Entity("WikiFloraAPI.Models.Flora", b =>
-                {
-                    b.HasOne("WikiFloraAPI.Models.ScientificName", "ScientificName")
-                        .WithMany()
-                        .HasForeignKey("ScientificNameId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("WikiFloraAPI.Models.FloraPhoto", "floraPhoto")
-                        .WithMany()
-                        .HasForeignKey("floraPhotoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("WikiFloraAPI.Models.Hierarchy", "hierarchy")
-                        .WithMany()
-                        .HasForeignKey("hierarchyId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ScientificName");
-
-                    b.Navigation("floraPhoto");
-
-                    b.Navigation("hierarchy");
                 });
 
             modelBuilder.Entity("WikiFloraAPI.Models.FloraPhoto", b =>
                 {
-                    b.HasOne("WikiFloraAPI.Models.Photo", "coverPhotoUrl")
+                    b.HasOne("WikiFloraAPI.Models.Photo", "CoverPhotoUrl")
                         .WithMany()
-                        .HasForeignKey("coverPhotoUrlId")
+                        .HasForeignKey("CoverPhotoUrlId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("coverPhotoUrl");
+                    b.HasOne("WikiFloraAPI.Models.Flora", null)
+                        .WithOne("FloraPhoto")
+                        .HasForeignKey("WikiFloraAPI.Models.FloraPhoto", "FloraId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CoverPhotoUrl");
+                });
+
+            modelBuilder.Entity("WikiFloraAPI.Models.Hierarchy", b =>
+                {
+                    b.HasOne("WikiFloraAPI.Models.Flora", "Flora")
+                        .WithOne("Hierarchy")
+                        .HasForeignKey("WikiFloraAPI.Models.Hierarchy", "FloraId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Flora");
                 });
 
             modelBuilder.Entity("WikiFloraAPI.Models.Photo", b =>
                 {
+                    b.HasOne("WikiFloraAPI.Models.Flora", "Flora")
+                        .WithMany()
+                        .HasForeignKey("FloraId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("WikiFloraAPI.Models.FloraPhoto", null)
-                        .WithMany("photoUrls")
+                        .WithMany("PhotoUrls")
                         .HasForeignKey("FloraPhotoId");
+
+                    b.Navigation("Flora");
+                });
+
+            modelBuilder.Entity("WikiFloraAPI.Models.ScientificName", b =>
+                {
+                    b.HasOne("WikiFloraAPI.Models.Flora", "Flora")
+                        .WithOne("ScientificName")
+                        .HasForeignKey("WikiFloraAPI.Models.ScientificName", "FloraId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Flora");
+                });
+
+            modelBuilder.Entity("WikiFloraAPI.Models.Flora", b =>
+                {
+                    b.Navigation("FloraPhoto")
+                        .IsRequired();
+
+                    b.Navigation("Hierarchy")
+                        .IsRequired();
+
+                    b.Navigation("ScientificName")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("WikiFloraAPI.Models.FloraPhoto", b =>
                 {
-                    b.Navigation("photoUrls");
+                    b.Navigation("PhotoUrls");
                 });
 #pragma warning restore 612, 618
         }

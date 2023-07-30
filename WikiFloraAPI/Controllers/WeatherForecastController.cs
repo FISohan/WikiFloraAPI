@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using WikiFloraAPI.Models;
 
 namespace WikiFloraAPI.Controllers
 {
@@ -21,6 +22,7 @@ namespace WikiFloraAPI.Controllers
         [HttpGet(Name = "GetWeatherForecast")]
         public IEnumerable<WeatherForecast> Get()
         {
+            HttpContext.Features.Set(new ExceptionHandler { details = "eroro" });
             return Enumerable.Range(1, 5).Select(index => new WeatherForecast
             {
                 Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
