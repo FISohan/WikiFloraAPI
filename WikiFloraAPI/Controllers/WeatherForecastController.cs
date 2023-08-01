@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using WikiFloraAPI.Models;
+using WikiFloraAPI.Services;
 
 namespace WikiFloraAPI.Controllers
 {
@@ -13,10 +14,13 @@ namespace WikiFloraAPI.Controllers
     };
 
         private readonly ILogger<WeatherForecastController> _logger;
+        private readonly IFileService _fileService;
 
-        public WeatherForecastController(ILogger<WeatherForecastController> logger)
+        public WeatherForecastController(ILogger<WeatherForecastController> logger,IFileService fileService)
         {
             _logger = logger;
+
+            _fileService = fileService;
         }
 
         [HttpGet(Name = "GetWeatherForecast")]

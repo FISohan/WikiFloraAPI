@@ -1,3 +1,4 @@
+using Microsoft.Extensions.FileProviders;
 using WikiFloraAPI.Data;
 using WikiFloraAPI.Models;
 using WikiFloraAPI.Services;
@@ -14,6 +15,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<DataContext>();
 
 builder.Services.AddScoped<IFloraService, FloraService>();
+builder.Services.AddScoped<IFileService, FileService>();
 
 builder.Services.AddProblemDetails(options =>
 {
@@ -42,5 +44,10 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(Path.Combine(builder.Environment.ContentRootPath,"FloraPhotos")),
+    RequestPath = "/photo"
+});
 
 app.Run();

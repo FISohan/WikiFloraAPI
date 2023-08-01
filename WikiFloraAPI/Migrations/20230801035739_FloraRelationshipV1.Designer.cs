@@ -11,8 +11,8 @@ using WikiFloraAPI.Data;
 namespace WikiFloraAPI.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230730075813_FloraAndFloraDataRalation-v1")]
-    partial class FloraAndFloraDataRalationv1
+    [Migration("20230801035739_FloraRelationshipV1")]
+    partial class FloraRelationshipV1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,6 +25,9 @@ namespace WikiFloraAPI.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
+
+                    b.Property<int>("AlphabetIndex")
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("BanglaName")
                         .IsRequired()
@@ -43,6 +46,8 @@ namespace WikiFloraAPI.Migrations
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AlphabetIndex");
 
                     b.ToTable("Floras");
                 });
@@ -125,11 +130,11 @@ namespace WikiFloraAPI.Migrations
                     b.Property<Guid?>("FloraPhotoId")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Reference")
+                    b.Property<string>("Path")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Url")
-                        .IsRequired()
+                    b.Property<string>("Reference")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");

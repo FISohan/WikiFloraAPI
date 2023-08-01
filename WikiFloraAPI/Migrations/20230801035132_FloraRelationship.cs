@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace WikiFloraAPI.Migrations
 {
     /// <inheritdoc />
-    public partial class FloraAndFloraDataRalation : Migration
+    public partial class FloraRelationship : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -17,6 +17,7 @@ namespace WikiFloraAPI.Migrations
                 {
                     Id = table.Column<Guid>(type: "TEXT", nullable: false),
                     BanglaName = table.Column<string>(type: "TEXT", nullable: false),
+                    AlphabetIndex = table.Column<int>(type: "INTEGER", nullable: false),
                     OthersName = table.Column<string>(type: "TEXT", nullable: false),
                     Description = table.Column<string>(type: "TEXT", nullable: false),
                     Contributer = table.Column<string>(type: "TEXT", nullable: false)
@@ -95,7 +96,7 @@ namespace WikiFloraAPI.Migrations
                 {
                     Id = table.Column<Guid>(type: "TEXT", nullable: false),
                     FloraId = table.Column<Guid>(type: "TEXT", nullable: false),
-                    Url = table.Column<string>(type: "TEXT", nullable: false),
+                    Path = table.Column<string>(type: "TEXT", nullable: false),
                     Reference = table.Column<string>(type: "TEXT", nullable: true),
                     Credit = table.Column<string>(type: "TEXT", nullable: true),
                     FloraPhotoId = table.Column<Guid>(type: "TEXT", nullable: true)
@@ -108,12 +109,6 @@ namespace WikiFloraAPI.Migrations
                         column: x => x.FloraPhotoId,
                         principalTable: "FloraPhoto",
                         principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Photo_Floras_FloraId",
-                        column: x => x.FloraId,
-                        principalTable: "Floras",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
@@ -132,11 +127,6 @@ namespace WikiFloraAPI.Migrations
                 table: "Hierarchy",
                 column: "FloraId",
                 unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Photo_FloraId",
-                table: "Photo",
-                column: "FloraId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Photo_FloraPhotoId",
@@ -164,10 +154,6 @@ namespace WikiFloraAPI.Migrations
             migrationBuilder.DropForeignKey(
                 name: "FK_FloraPhoto_Floras_FloraId",
                 table: "FloraPhoto");
-
-            migrationBuilder.DropForeignKey(
-                name: "FK_Photo_Floras_FloraId",
-                table: "Photo");
 
             migrationBuilder.DropForeignKey(
                 name: "FK_FloraPhoto_Photo_CoverPhotoUrlId",

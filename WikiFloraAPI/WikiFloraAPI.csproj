@@ -22,7 +22,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Models\Dtos\" />
+    <Folder Include="FloraPhotos\" />
+    <Folder Include="wwwroot\" />
   </ItemGroup>
 
 </Project>
