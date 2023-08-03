@@ -4,6 +4,7 @@ using WikiFloraAPI.Models;
 using WikiFloraAPI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
+var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
 // Add services to the container.
 
@@ -16,7 +17,13 @@ builder.Services.AddDbContext<DataContext>();
 
 builder.Services.AddScoped<IFloraService, FloraService>();
 builder.Services.AddScoped<IFileService, FileService>();
-
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(
+        name: MyAllowSpecificOrigins,
+        policy => { policy.WithOrigins("http://localhost:4200/").AllowAnyOrigin().AllowAnyHeader();
+        });
+});
 builder.Services.AddProblemDetails(options =>
 {
     options.CustomizeProblemDetails = (context) =>
@@ -25,11 +32,11 @@ builder.Services.AddProblemDetails(options =>
         context.ProblemDetails.Detail = exceptionError?.details;
     };
 });
-
 var app = builder.Build();
 
 app.UseExceptionHandler();
 app.UseStatusCodePages();
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -49,5 +56,5 @@ app.UseStaticFiles(new StaticFileOptions
     FileProvider = new PhysicalFileProvider(Path.Combine(builder.Environment.ContentRootPath,"FloraPhotos")),
     RequestPath = "/photo"
 });
-
+app.UseCors(MyAllowSpecificOrigins);
 app.Run();
