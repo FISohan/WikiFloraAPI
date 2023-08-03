@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using WikiFloraAPI.Data;
 using WikiFloraAPI.Models;
 
@@ -79,7 +78,7 @@ namespace WikiFloraAPI.Services
         public async Task<List<Flora?>> GetFloraList(int pageNumber, int pageSize)
         {
             List<Flora?> _floras = await _context.Floras
-                  .Include(flora => flora.ScientificName)
+                  .Include(f => f.Photos.Where(p => p.IsCoverPhoto))
                   .OrderBy(e => e.AlphabetIndex)
                   .Skip(pageSize * pageNumber)
                   .Take(pageSize)

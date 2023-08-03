@@ -11,7 +11,7 @@ using WikiFloraAPI.Data;
 namespace WikiFloraAPI.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230801035132_FloraRelationship")]
+    [Migration("20230803070242_FloraRelationship")]
     partial class FloraRelationship
     {
         /// <inheritdoc />
@@ -47,29 +47,9 @@ namespace WikiFloraAPI.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("AlphabetIndex");
+
                     b.ToTable("Floras");
-                });
-
-            modelBuilder.Entity("WikiFloraAPI.Models.FloraPhoto", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
-
-                    b.Property<Guid>("CoverPhotoUrlId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<Guid>("FloraId")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CoverPhotoUrlId");
-
-                    b.HasIndex("FloraId")
-                        .IsUnique();
-
-                    b.ToTable("FloraPhoto");
                 });
 
             modelBuilder.Entity("WikiFloraAPI.Models.Hierarchy", b =>
@@ -125,9 +105,6 @@ namespace WikiFloraAPI.Migrations
                     b.Property<Guid>("FloraId")
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid?>("FloraPhotoId")
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("Path")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -137,7 +114,7 @@ namespace WikiFloraAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("FloraPhotoId");
+                    b.HasIndex("FloraId");
 
                     b.ToTable("Photo");
                 });
@@ -167,23 +144,6 @@ namespace WikiFloraAPI.Migrations
                     b.ToTable("ScientificName");
                 });
 
-            modelBuilder.Entity("WikiFloraAPI.Models.FloraPhoto", b =>
-                {
-                    b.HasOne("WikiFloraAPI.Models.Photo", "CoverPhotoUrl")
-                        .WithMany()
-                        .HasForeignKey("CoverPhotoUrlId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("WikiFloraAPI.Models.Flora", null)
-                        .WithOne("FloraPhoto")
-                        .HasForeignKey("WikiFloraAPI.Models.FloraPhoto", "FloraId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("CoverPhotoUrl");
-                });
-
             modelBuilder.Entity("WikiFloraAPI.Models.Hierarchy", b =>
                 {
                     b.HasOne("WikiFloraAPI.Models.Flora", null)
@@ -195,9 +155,13 @@ namespace WikiFloraAPI.Migrations
 
             modelBuilder.Entity("WikiFloraAPI.Models.Photo", b =>
                 {
-                    b.HasOne("WikiFloraAPI.Models.FloraPhoto", null)
-                        .WithMany("PhotoUrls")
-                        .HasForeignKey("FloraPhotoId");
+                    b.HasOne("WikiFloraAPI.Models.Flora", "Flora")
+                        .WithMany("Photos")
+                        .HasForeignKey("FloraId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Flora");
                 });
 
             modelBuilder.Entity("WikiFloraAPI.Models.ScientificName", b =>
@@ -211,19 +175,13 @@ namespace WikiFloraAPI.Migrations
 
             modelBuilder.Entity("WikiFloraAPI.Models.Flora", b =>
                 {
-                    b.Navigation("FloraPhoto")
-                        .IsRequired();
-
                     b.Navigation("Hierarchy")
                         .IsRequired();
 
+                    b.Navigation("Photos");
+
                     b.Navigation("ScientificName")
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("WikiFloraAPI.Models.FloraPhoto", b =>
-                {
-                    b.Navigation("PhotoUrls");
                 });
 #pragma warning restore 612, 618
         }
