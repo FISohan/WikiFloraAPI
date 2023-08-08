@@ -12,9 +12,12 @@ namespace WikiFloraAPI.Services
             throw new NotImplementedException();
         }
 
-        public Task<string> remove(string fileName)
+        public string remove(string fileName)
         {
-            throw new NotImplementedException();
+            string directory = Directory.GetCurrentDirectory();
+            string filePath = Path.Combine(directory,"FloraPhotos", fileName);
+            try { File.Delete(filePath); } catch(Exception ex) { return ex.Message; }
+            return fileName;
         }
 
         public async Task<string?> upload(IFormFile file)

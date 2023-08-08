@@ -25,5 +25,12 @@ namespace WikiFloraAPI.Controllers
             string photoUrl = Path.Combine(isHttps ? "https://" : "http://", hostPath,"photo",filePath);
             return Ok(photoUrl);
         }
-    }
+        [HttpPost("remove")]
+        public async Task<ActionResult<string>>RemoveFile(string fileName)
+        {
+            string s = _fileService.remove(fileName);
+            return Ok(s);
+        }
+
+    }   
 }
