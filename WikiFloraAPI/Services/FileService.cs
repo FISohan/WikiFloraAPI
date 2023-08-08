@@ -6,12 +6,13 @@ namespace WikiFloraAPI.Services
 {
     public class FileService : IFileService
     {
+
         public Task<string?> get(string path)
         {
             throw new NotImplementedException();
         }
 
-        public Task<string> remove(string path)
+        public Task<string> remove(string fileName)
         {
             throw new NotImplementedException();
         }
@@ -22,12 +23,11 @@ namespace WikiFloraAPI.Services
             string uniqueFileName = Guid.NewGuid().ToString() + "_" + fileName;
 
             string imagePath = Path.Combine(Directory.GetCurrentDirectory(), "FloraPhotos", uniqueFileName);
-            Console.WriteLine(imagePath);
             using (var fileStream = new FileStream(imagePath, FileMode.Create))
             {
                 await file.CopyToAsync(fileStream);
             }
-                return imagePath;
+             return uniqueFileName;
         }
 
     }

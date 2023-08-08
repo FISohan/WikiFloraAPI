@@ -10,6 +10,7 @@ namespace WikiFloraAPI.Models
         Flora? Flora { get; set; }
         public bool IsCoverPhoto { get; set; } = false;
         public required string Path { get; set; }
+      //  public required  string imageName { get; set; }
         public string? Reference { get; set; }
         public string? Credit { get; set; }
     }

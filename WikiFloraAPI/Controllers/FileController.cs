@@ -14,12 +14,16 @@ namespace WikiFloraAPI.Controllers
         {
             _fileService = fileService;
         }
+
         [HttpPost]
         public async Task<ActionResult<string?>> UploadFile(IFormFile file)
         {
             string? filePath = await _fileService.upload(file);
             if (filePath == null) return BadRequest();
-            return Ok(filePath);
+            string hostPath = HttpContext.Request.Host.Value;
+            bool isHttps = HttpContext.Request.IsHttps;
+            string photoUrl = Path.Combine(isHttps ? "https://" : "http://", hostPath,"photo",filePath);
+            return Ok(photoUrl);
         }
     }
 }

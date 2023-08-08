@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Text;
 using WikiFloraAPI.Data;
 using WikiFloraAPI.Models;
 
@@ -12,7 +13,7 @@ namespace WikiFloraAPI.Services
         private readonly DataContext _context;
 
 
-        private int _GetAlphabetIndex(string BanglaName)
+        private int _GetBanglaAlphabetIndex(string BanglaName)
         {
             List<char> banglaAlphabetUnicodeChars = new List<char>()
         {
@@ -67,6 +68,11 @@ namespace WikiFloraAPI.Services
             return index;
         }
 
+     /*   private int __GetEnglishAlphabetIndex(string EnglishName)
+        {
+            char firstAlphabet = EnglishName.ToLower().Replace(" ", "").First();
+            int index = 26 + (Encoding.ASCII.GetBytes("z") - Encoding.ASCII.GetBytes(firstAlphabet));
+        }*/
         public FloraService(DataContext context)
         {
             _context = context;
@@ -79,25 +85,41 @@ namespace WikiFloraAPI.Services
         {
             List<Flora?> _floras = await _context.Floras
                   .Include(f => f.Photos.Where(p => p.IsCoverPhoto))
+                  .Include(f => f.ScientificName)
                   .OrderBy(e => e.AlphabetIndex)
                   .Skip(pageSize * pageNumber)
                   .Take(pageSize)
                   .ToListAsync<Flora?>();
-            
             return _floras;
         }
 
-      public async Task<Flora> AddFlora(Flora flora)
+        public async Task<List<Flora?>> GetFloraListByGenus(int pageNumber, int pageSize)
         {
-          flora.AlphabetIndex = _GetAlphabetIndex(flora.BanglaName);
+            List<Flora?> _floras = await _context.Floras
+                  .Include(f => f.Photos.Where(p => p.IsCoverPhoto))
+                  .Include(f => f.ScientificName)
+                  .OrderBy(e => e.GenusIndex)
+                  .Skip(pageSize * pageNumber)
+                  .Take(pageSize)
+                  .ToListAsync<Flora?>();
+            return _floras;
+        }
+
+        public async Task<Flora> AddFlora(Flora flora)
+        {
+          flora.AlphabetIndex = _GetBanglaAlphabetIndex(flora.BanglaName);
           _context.Add(flora);
           await _context.SaveChangesAsync();
           return flora;
         }
 
-       public async Task<Flora> GetSingleFlora()
+       public async Task<Flora> GetFloraByName(string name)
         {
-            throw new NotImplementedException();
+            Flora _flora = await _context.Floras
+                .Include(f => f.ScientificName)
+                .Include(f => f.Hierarchy)
+                .FirstAsync(f => f.BanglaName == name || f.OthersName == name);
+          return _flora;
         }
     }
 }
