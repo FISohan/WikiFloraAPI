@@ -21,8 +21,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy(
         name: MyAllowSpecificOrigins,
-        policy => { policy.WithOrigins("http://localhost:4200/").AllowAnyOrigin().AllowAnyHeader();
-        });
+        policy => { policy.WithOrigins("http://localhost:4200/").WithMethods("GET", "POST", "DELETE", "PUT").AllowAnyOrigin().AllowAnyHeader(); });
 });
 builder.Services.AddProblemDetails(options =>
 {
@@ -45,6 +44,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
     app.UseDeveloperExceptionPage();
 }
+app.UseCors(MyAllowSpecificOrigins);
 
 app.UseHttpsRedirection();
 
@@ -56,5 +56,4 @@ app.UseStaticFiles(new StaticFileOptions
     FileProvider = new PhysicalFileProvider(Path.Combine(builder.Environment.ContentRootPath,"FloraPhotos")),
     RequestPath = "/photo"
 });
-app.UseCors(MyAllowSpecificOrigins);
 app.Run();

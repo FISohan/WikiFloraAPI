@@ -13,6 +13,5 @@ namespace WikiFloraAPI.Models
         public required string Order { get; set; }
         public required string Genus { get; set; }
         public required string Species { get; set; }
-        public required string BionomialName { get; set; }
     }
 }

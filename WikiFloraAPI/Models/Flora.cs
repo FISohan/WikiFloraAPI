@@ -16,5 +16,6 @@ namespace WikiFloraAPI.Models
         public required ScientificName ScientificName { get; set; }
         public required List<Photo> Photos { get; set; }
         public required Hierarchy Hierarchy { get; set; }
+        public required string reference { get; set; }
     }
 }
