@@ -1,7 +1,12 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.FileProviders;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using WikiFloraAPI;
 using WikiFloraAPI.Data;
 using WikiFloraAPI.Models;
 using WikiFloraAPI.Services;
+using static System.Net.WebRequestMethods;
 
 var builder = WebApplication.CreateBuilder(args);
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
@@ -31,6 +36,30 @@ builder.Services.AddProblemDetails(options =>
         context.ProblemDetails.Detail = exceptionError?.details;
     };
 });
+
+builder.Services.AddAuthentication(option =>
+{
+    option.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    option.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(x =>
+{
+    AuthOption authOption = builder.Configuration.GetSection("AuthOption").Get<AuthOption>()!;
+    x.MetadataAddress = authOption.serverBaseUrl + "/.well-known/openid-configuration";
+    x.RequireHttpsMetadata = false;
+    x.SaveToken = true;
+    x.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidIssuer = authOption.serverBaseUrl,
+        ValidateAudience = true,
+        ValidAudience = "account",
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(authOption.secret)),
+        ValidateLifetime = true,
+        ClockSkew = TimeSpan.FromMinutes(2),
+    };
+});
+
 var app = builder.Build();
 
 app.UseExceptionHandler();
@@ -48,7 +77,9 @@ app.UseCors(MyAllowSpecificOrigins);
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
+
 
 app.MapControllers();
 app.UseStaticFiles(new StaticFileOptions

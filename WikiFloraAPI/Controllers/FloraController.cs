@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using WikiFloraAPI.Models;
 using WikiFloraAPI.Services;
 
@@ -14,9 +16,19 @@ namespace WikiFloraAPI.Controllers
         {
             _floraService = floraService;
         }
+        [Authorize]
         [HttpGet("Get/pageNumber={pageNumber:int}&pageSize={pageSize:int}&orderByGenus={orderByGenus:bool}")]
         public async Task<ActionResult<Page<Flora>>> GetAll(int pageSize, int pageNumber,bool orderByGenus)
         {
+            ClaimsIdentity? currentUser = HttpContext.User.Identity as ClaimsIdentity;
+            if(currentUser != null)
+            {
+                IEnumerable<Claim>claims = currentUser.Claims;
+                foreach (var item in claims)
+                {
+                    Console.WriteLine(item.Value);
+                }
+            }
             int _floraListSize = await _floraService.FloraCount();
             int maxPageNumber = (_floraListSize % pageSize == 0)
                                ? _floraListSize / pageSize
@@ -24,7 +36,7 @@ namespace WikiFloraAPI.Controllers
             List<Flora?> floras = await _floraService.GetFloraList(pageNumber, pageSize);
             if (orderByGenus) floras = await _floraService.GetFloraListByGenus(pageNumber, pageSize);
 
-            Page<Flora> _page = new Page<Flora>{ Data = floras,
+            Page<Flora> _page = new Page<Flora>{ Data = floras!,
                                         currentPageIndex = pageNumber,
                                         MaxPageIndex = maxPageNumber - 1 };
 
