@@ -16,7 +16,7 @@ namespace WikiFloraAPI.Controllers
         {
             _floraService = floraService;
         }
-        [Authorize]
+        [Authorize("Admin")]
         [HttpGet("Get/pageNumber={pageNumber:int}&pageSize={pageSize:int}&orderByGenus={orderByGenus:bool}")]
         public async Task<ActionResult<Page<Flora>>> GetAll(int pageSize, int pageNumber,bool orderByGenus)
         {
@@ -24,10 +24,10 @@ namespace WikiFloraAPI.Controllers
             if(currentUser != null)
             {
                 IEnumerable<Claim>claims = currentUser.Claims;
-              /*  foreach (var item in claims)
+                foreach (var item in claims)
                 {
-                    Console.WriteLine(item.Type + " " + item.Value);
-                }*/
+                    Console.WriteLine(">>>" + item.Type + " " + item.Value);
+                }
             }
             int _floraListSize = await _floraService.FloraCount();
             int maxPageNumber = (_floraListSize % pageSize == 0)

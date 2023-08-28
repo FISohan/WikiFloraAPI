@@ -1,4 +1,6 @@
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -22,6 +24,8 @@ builder.Services.AddDbContext<DataContext>();
 builder.Services.AddScoped<IFloraService, FloraService>();
 builder.Services.AddScoped<IFileService, FileService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddTransient<IClaimsTransformation,KeycloakClaimsTransformation>();
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(
@@ -58,6 +62,13 @@ builder.Services.AddAuthentication(option =>
         ValidateLifetime = true,
         ClockSkew = TimeSpan.FromMinutes(2),
     };
+});
+
+builder.Services.AddAuthorization(option =>
+{
+    option.DefaultPolicy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
+    option.AddPolicy( "Admin", policy => { policy.RequireAssertion(context => context.User.IsInRole("admin")); } );
+
 });
 
 var app = builder.Build();
