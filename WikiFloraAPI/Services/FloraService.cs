@@ -12,7 +12,10 @@ namespace WikiFloraAPI.Services
     {
         private readonly DataContext _context;
 
-
+    public FloraService(DataContext context)
+        {
+            _context = context;
+        }
         private int _GetBanglaAlphabetIndex(string BanglaName)
         {
             List<char> banglaAlphabetUnicodeChars = new List<char>()
@@ -73,10 +76,7 @@ namespace WikiFloraAPI.Services
             char firstAlphabet = EnglishName.ToLower().Replace(" ", "").First();
             int index = 26 + (Encoding.ASCII.GetBytes("z") - Encoding.ASCII.GetBytes(firstAlphabet));
         }*/
-        public FloraService(DataContext context)
-        {
-            _context = context;
-        }
+    
         public async Task<int> FloraCount()
         {
             return await _context.Floras.CountAsync();
@@ -108,7 +108,7 @@ namespace WikiFloraAPI.Services
         public async Task<Flora> AddFlora(Flora flora)
         {
           flora.AlphabetIndex = _GetBanglaAlphabetIndex(flora.BanglaName);
-          _context.Add(flora);
+          _context.Floras.Add(flora);
           await _context.SaveChangesAsync();
           return flora;
         }

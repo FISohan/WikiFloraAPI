@@ -24,10 +24,10 @@ namespace WikiFloraAPI.Controllers
             if(currentUser != null)
             {
                 IEnumerable<Claim>claims = currentUser.Claims;
-                foreach (var item in claims)
+              /*  foreach (var item in claims)
                 {
-                    Console.WriteLine(item.Value);
-                }
+                    Console.WriteLine(item.Type + " " + item.Value);
+                }*/
             }
             int _floraListSize = await _floraService.FloraCount();
             int maxPageNumber = (_floraListSize % pageSize == 0)

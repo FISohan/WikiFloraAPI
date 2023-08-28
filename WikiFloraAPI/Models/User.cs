@@ -1,0 +1,11 @@
+﻿namespace WikiFloraAPI.Models
+{
+    public class User
+    {
+        public Guid Id { get; set; }
+        public required string UserId { get; set; }
+        public required string Name { get; set; }
+        public required string Mail { get; set; }
+        public required string SocialLink { get; set; }
+    }
+}

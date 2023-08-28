@@ -6,7 +6,6 @@ using WikiFloraAPI;
 using WikiFloraAPI.Data;
 using WikiFloraAPI.Models;
 using WikiFloraAPI.Services;
-using static System.Net.WebRequestMethods;
 
 var builder = WebApplication.CreateBuilder(args);
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
@@ -22,6 +21,7 @@ builder.Services.AddDbContext<DataContext>();
 
 builder.Services.AddScoped<IFloraService, FloraService>();
 builder.Services.AddScoped<IFileService, FileService>();
+builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(

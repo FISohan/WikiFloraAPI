@@ -41,11 +41,14 @@ namespace WikiFloraAPI.Migrations
                     b.Property<int>("GenusIndex")
                         .HasColumnType("INTEGER");
 
+                    b.Property<bool>("IsApprove")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("OthersName")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("reference")
+                    b.Property<string>("Reference")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
@@ -139,6 +142,33 @@ namespace WikiFloraAPI.Migrations
                         .IsUnique();
 
                     b.ToTable("ScientificName");
+                });
+
+            modelBuilder.Entity("WikiFloraAPI.Models.User", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Mail")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("SocialLink")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("WikiFloraAPI.Models.Hierarchy", b =>

@@ -15,5 +15,6 @@ namespace WikiFloraAPI.Data
             base.OnConfiguring(optionsBuilder);
         }
         public DbSet<Flora>Floras { get; set; }
+        public DbSet<User> Users { get; set; }
     }
 }
