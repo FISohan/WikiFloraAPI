@@ -159,7 +159,6 @@ namespace WikiFloraAPI.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("SocialLink")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("UserId")

@@ -16,19 +16,9 @@ namespace WikiFloraAPI.Controllers
         {
             _floraService = floraService;
         }
-        [Authorize("Admin")]
         [HttpGet("Get/pageNumber={pageNumber:int}&pageSize={pageSize:int}&orderByGenus={orderByGenus:bool}")]
         public async Task<ActionResult<Page<Flora>>> GetAll(int pageSize, int pageNumber,bool orderByGenus)
         {
-            ClaimsIdentity? currentUser = HttpContext.User.Identity as ClaimsIdentity;
-            if(currentUser != null)
-            {
-                IEnumerable<Claim>claims = currentUser.Claims;
-                foreach (var item in claims)
-                {
-                    Console.WriteLine(">>>" + item.Type + " " + item.Value);
-                }
-            }
             int _floraListSize = await _floraService.FloraCount();
             int maxPageNumber = (_floraListSize % pageSize == 0)
                                ? _floraListSize / pageSize
@@ -55,10 +45,29 @@ namespace WikiFloraAPI.Controllers
             if(flora == null) return NotFound();
             return Ok(flora);
         }
+
+        [Authorize]
         [HttpPost]
         public async Task<ActionResult<Flora>> Post(Flora flora)
         {
+            flora.Contributer = ClaimService.getClaimData(User.Claims).sub;
             return Ok(await _floraService.AddFlora(flora));
+        }
+
+        [Authorize("Admin")]
+        [HttpPut("aprrove")]
+        public async Task<ActionResult<bool>>ApproveFlora(string floraID)
+        {
+            bool success = await _floraService.approveFlora(floraID);
+            if(!success) return BadRequest("May Flora ID is not valid");
+            return Ok(success);
+        }
+
+        [HttpGet("disapproved")]
+        public async Task<ActionResult<List<Flora>>> GetDisapproveFlora()
+        {
+            List<Flora> flora = await _floraService.GetDisapprovePost();
+            return flora;
         }
     }
 }

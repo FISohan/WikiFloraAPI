@@ -84,6 +84,7 @@ namespace WikiFloraAPI.Services
         public async Task<List<Flora?>> GetFloraList(int pageNumber, int pageSize)
         {
             List<Flora?> _floras = await _context.Floras
+                  .Where(f => f.IsApprove)
                   .Include(f => f.Photos.Where(p => p.IsCoverPhoto))
                   .Include(f => f.ScientificName)
                   .OrderBy(e => e.AlphabetIndex)
@@ -104,7 +105,11 @@ namespace WikiFloraAPI.Services
                   .ToListAsync<Flora?>();
             return _floras;
         }
-
+        public async Task<List<Flora>> GetDisapprovePost()
+        {
+            List<Flora> floras = await _context.Floras.Where(f => !f.IsApprove).ToListAsync();
+            return floras;
+        }
         public async Task<Flora> AddFlora(Flora flora)
         {
           flora.AlphabetIndex = _GetBanglaAlphabetIndex(flora.BanglaName);
@@ -120,6 +125,27 @@ namespace WikiFloraAPI.Services
                 .Include(f => f.Hierarchy)
                 .FirstAsync(f => f.BanglaName == name || f.OthersName == name);
           return _flora;
+        }
+
+        public async Task<Flora?> GetFloraById(string id)
+        {
+            Flora? flora = await _context.Floras.SingleOrDefaultAsync(f => f.Id.Equals(id));
+            return flora;
+        }
+        public async Task<bool> approveFlora(string id)
+        {
+            Flora? flora = await GetFloraById(id);
+            if (flora == null) return false;
+            flora.IsApprove = true;
+            _context.Entry(flora).State = EntityState.Modified;
+            try
+            {
+                await _context.SaveChangesAsync();
+            }catch (DbUpdateConcurrencyException)
+            {
+                return false;
+            }
+            return true;
         }
     }
 }

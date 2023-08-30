@@ -35,13 +35,11 @@ namespace WikiFloraAPI.Controllers
         {
             // string userId = User.Claims.Single(c => c.Type.Equals("sub")).Value;
             //Console.WriteLine(">>>" +  userId);
-            var claims = HttpContext.User.Claims;
-            foreach (var item in claims)
-            {
-                Console.WriteLine(">>>>>>>>" + item.Type + " " + item.Value);
-            }
-          //  bool existed = await _userService.isUserExist(userId);
-            return Ok(true);
+            var claims = User.Claims;
+            string userId = ClaimService.getClaimData(claims).sub;
+            Console.WriteLine(">>>>>>>>" + userId);
+            bool existed = await _userService.isUserExist(userId);
+            return Ok(existed);
         }
         [HttpPost]
         public async Task<ActionResult<User>>AddUser(User user)
