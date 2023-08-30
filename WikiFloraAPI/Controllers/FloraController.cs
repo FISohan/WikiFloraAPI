@@ -49,9 +49,11 @@ namespace WikiFloraAPI.Controllers
             return Ok(await _floraService.FloraCount());
         }
         [HttpGet("Get/{banglaName}")]
-        public async Task<ActionResult<Flora>> GetFloraByName(string banglaName)
+        public async Task<ActionResult<Flora?>> GetFloraByName(string banglaName)
         {
-            return await _floraService.GetFloraByName(banglaName);
+            Flora? flora = await _floraService.GetFloraByName(banglaName);
+            if(flora == null) return NotFound();
+            return Ok(flora);
         }
         [HttpPost]
         public async Task<ActionResult<Flora>> Post(Flora flora)

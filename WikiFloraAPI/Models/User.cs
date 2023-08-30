@@ -6,6 +6,6 @@
         public required string UserId { get; set; }
         public required string Name { get; set; }
         public required string Mail { get; set; }
-        public required string SocialLink { get; set; }
+        public string? SocialLink { get; set; }
     }
 }

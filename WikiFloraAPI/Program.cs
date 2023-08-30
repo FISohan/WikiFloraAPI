@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 using WikiFloraAPI;
 using WikiFloraAPI.Data;
@@ -59,6 +60,7 @@ builder.Services.AddAuthentication(option =>
         ValidAudience = "account",
         ValidateIssuerSigningKey = true,
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(authOption.secret)),
+        
         ValidateLifetime = true,
         ClockSkew = TimeSpan.FromMinutes(2),
     };
@@ -87,6 +89,8 @@ if (app.Environment.IsDevelopment())
 app.UseCors(MyAllowSpecificOrigins);
 
 app.UseHttpsRedirection();
+
+JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
 app.UseAuthentication();
 app.UseAuthorization();

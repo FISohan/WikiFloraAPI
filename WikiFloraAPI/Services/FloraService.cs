@@ -113,7 +113,7 @@ namespace WikiFloraAPI.Services
           return flora;
         }
 
-       public async Task<Flora> GetFloraByName(string name)
+       public async Task<Flora?> GetFloraByName(string name)
         {
             Flora _flora = await _context.Floras
                 .Include(f => f.ScientificName)

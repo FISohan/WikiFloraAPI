@@ -24,10 +24,22 @@ namespace WikiFloraAPI.Services
             await _context.SaveChangesAsync();
             return user;
         }
-
+        
         public async Task<List<User>> getAllUser()
         {
             return await _context.Users.ToListAsync<User>();
+        }
+
+        public async Task<User?> getUser(string userId)
+        {
+            User? user = await _context.Users.SingleOrDefaultAsync( u => u.UserId == userId);
+            return user;
+        }
+
+        public async Task<bool> isUserExist(string userId)
+        {
+            bool x = await _context.Users.AnyAsync(u => u.UserId == userId);
+            return x;
         }
 
         public Task<UserDto> updateUser(UserDto user)
