@@ -56,10 +56,11 @@ namespace WikiFloraAPI.Controllers
             return Ok(await _floraService.AddFlora(flora));
         }
 
-        [Authorize("Admin")]
+       // [Authorize("Admin")]
         [HttpPut("aprrove")]
-        public async Task<ActionResult<bool>>ApproveFlora(string floraID)
+        public async Task<ActionResult<bool>>ApproveFlora(Guid floraID)
         {
+            Console.WriteLine(">>hhh>>>" + floraID);
             bool success = await _floraService.approveFlora(floraID);
             if(!success) return BadRequest("May Flora ID is not valid");
             return Ok(success);
@@ -69,6 +70,13 @@ namespace WikiFloraAPI.Controllers
         public async Task<ActionResult<List<Flora>>> GetDisapproveFlora()
         {
             List<Flora> flora = await _floraService.GetDisapprovePost();
+            return flora;
+        }
+        [HttpGet("{floraId}")]
+        public async Task<ActionResult<Flora>> GetById(Guid floraId)
+        {
+            Flora? flora = await _floraService.GetFloraById(floraId);
+            if(flora == null) return NotFound();
             return flora;
         }
     }

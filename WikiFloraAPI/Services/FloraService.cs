@@ -128,14 +128,22 @@ namespace WikiFloraAPI.Services
           return _flora;
         }
 
-        public async Task<Flora?> GetFloraById(string id)
+
+
+        public async Task<Flora?> GetFloraById(Guid id)
         {
-            Flora? flora = await _context.Floras.SingleOrDefaultAsync(f => f.Id.Equals(id));
+            Flora flora = await _context.Floras
+                .Include(f => f.Hierarchy)
+                .Include(f => f.ScientificName)
+                .Include(f => f.Photos)
+                .FirstAsync(f => f.Id == id);
             return flora;
         }
-        public async Task<bool> approveFlora(string id)
+        public async Task<bool> approveFlora(Guid id)
         {
             Flora? flora = await GetFloraById(id);
+            Console.WriteLine(">>>>>>>>>>>>>>>>>>" + flora?.BanglaName + id);
+
             if (flora == null) return false;
             flora.IsApprove = true;
             _context.Entry(flora).State = EntityState.Modified;
