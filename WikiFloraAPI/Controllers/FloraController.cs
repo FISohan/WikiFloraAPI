@@ -50,7 +50,9 @@ namespace WikiFloraAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<Flora>> Post(Flora flora)
         {
-            flora.Contributer = ClaimService.getClaimData(User.Claims).sub;
+            ClaimData claimData = ClaimService.getClaimData(User.Claims);
+            flora.Contributer = claimData.sub;
+            flora.ContributerName = claimData.name;
             return Ok(await _floraService.AddFlora(flora));
         }
 

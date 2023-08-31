@@ -123,6 +123,7 @@ namespace WikiFloraAPI.Services
             Flora _flora = await _context.Floras
                 .Include(f => f.ScientificName)
                 .Include(f => f.Hierarchy)
+                .Include(f => f.Photos)
                 .FirstAsync(f => f.BanglaName == name || f.OthersName == name);
           return _flora;
         }

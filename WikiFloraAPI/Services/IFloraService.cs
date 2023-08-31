@@ -11,6 +11,6 @@ namespace WikiFloraAPI.Services
        public Task<List<Flora?>> GetFloraListByGenus(int pageNumber, int pageSize);
        public Task<bool>approveFlora(string id);
        public Task<Flora?> GetFloraById(string id);
-       public  Task<List<Flora>> GetDisapprovePost()
+        public Task<List<Flora>> GetDisapprovePost();
     }
 }   
