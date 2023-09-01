@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 using WikiFloraAPI.Models;
 using WikiFloraAPI.Services;
 
@@ -65,7 +64,14 @@ namespace WikiFloraAPI.Controllers
             if(!success) return BadRequest("May Flora ID is not valid");
             return Ok(success);
         }
-
+        [Authorize]
+        [HttpPut]
+        public async Task<ActionResult<bool>> UpdateFlora(Flora updatedFlora)
+        {
+            bool sucess = await _floraService.UpadateFlora(updatedFlora);
+            if (!sucess) return BadRequest();
+            return sucess;
+        }
         [HttpGet("disapproved")]
         public async Task<ActionResult<List<Flora>>> GetDisapproveFlora()
         {
@@ -85,6 +91,21 @@ namespace WikiFloraAPI.Controllers
             bool success = await _floraService.deleteFlora(id);
             if (!success) return NotFound("Delete process is not success");
             return success;
+        }
+
+        [HttpGet("get/byUser")]
+        public async Task<ActionResult<List<Flora>>> GetFloraByUserId(string userId)
+        {
+            List<Flora> floras = await _floraService.GetFloraByUser(userId);
+            return Ok(floras);
+        }
+        [Authorize]
+        [HttpGet("get/byUser/auth")]
+        public async Task<ActionResult<List<Flora>>> GetFloraByUserIdAuth()
+        {
+            string userId = ClaimService.getClaimData(User.Claims).sub;
+            List<Flora> floras = await _floraService.GetFloraByUserAuth(userId);
+            return Ok(floras);
         }
 
     }

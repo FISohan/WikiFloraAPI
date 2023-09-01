@@ -94,6 +94,20 @@ namespace WikiFloraAPI.Services
             return _floras;
         }
 
+        public async Task<bool> UpadateFlora(Flora updatedFlora)
+        {
+            updatedFlora.IsApprove = false;
+            _context.Entry(updatedFlora).State = EntityState.Modified;
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                return false;
+            }
+            return true;
+        }
         public async Task<List<Flora?>> GetFloraListByGenus(int pageNumber, int pageSize)
         {
             List<Flora?> _floras = await _context.Floras
@@ -146,10 +160,27 @@ namespace WikiFloraAPI.Services
                 .FirstAsync(f => f.Id == id);
             return flora;
         }
+        public async Task<List<Flora>> GetFloraByUser(string id)
+        {
+            List<Flora> floras = await _context.Floras
+                .Include(f => f.Photos.Where(p => p.IsCoverPhoto))
+                .Include(f => f.ScientificName)
+                .Where(f => f.Contributer == id && f.IsApprove == true).ToListAsync();
+            return floras;
+        }
+
+        public async Task<List<Flora>> GetFloraByUserAuth(string id)
+        {
+            List<Flora> floras = await _context.Floras
+                 .Include(f => f.Photos.Where(p => p.IsCoverPhoto))
+                 .Include(f => f.ScientificName)
+                 .Where(f => f.Contributer == id ).ToListAsync();
+            return floras;
+        }
+
         public async Task<bool> approveFlora(Guid id)
         {
             Flora? flora = await GetFloraById(id);
-            Console.WriteLine(">>>>>>>>>>>>>>>>>>" + flora?.BanglaName + id);
 
             if (flora == null) return false;
             flora.IsApprove = true;
