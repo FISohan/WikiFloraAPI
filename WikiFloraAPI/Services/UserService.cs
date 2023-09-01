@@ -32,7 +32,7 @@ namespace WikiFloraAPI.Services
 
         public async Task<User?> getUser(string userId)
         {
-            User? user = await _context.Users.SingleOrDefaultAsync( u => u.UserId == userId);
+            User? user = await _context.Users.FirstOrDefaultAsync( u => u.UserId == userId);
             return user;
         }
 

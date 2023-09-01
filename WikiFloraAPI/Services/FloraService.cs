@@ -128,7 +128,14 @@ namespace WikiFloraAPI.Services
           return _flora;
         }
 
-
+        public async Task<bool> deleteFlora(Guid id)
+        {
+            Flora? flora = await GetFloraById(id);
+            if (flora == null) return false;
+            _context.Floras.Remove(flora);
+            await _context.SaveChangesAsync();
+            return true;
+        }
 
         public async Task<Flora?> GetFloraById(Guid id)
         {

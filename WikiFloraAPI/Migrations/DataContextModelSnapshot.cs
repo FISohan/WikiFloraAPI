@@ -154,6 +154,10 @@ namespace WikiFloraAPI.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("GivenName")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Mail")
                         .IsRequired()
                         .HasColumnType("TEXT");

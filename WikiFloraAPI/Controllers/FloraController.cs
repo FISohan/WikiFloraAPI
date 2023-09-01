@@ -56,7 +56,7 @@ namespace WikiFloraAPI.Controllers
             return Ok(await _floraService.AddFlora(flora));
         }
 
-       // [Authorize("Admin")]
+        [Authorize("Admin")]
         [HttpPut("aprrove")]
         public async Task<ActionResult<bool>>ApproveFlora(Guid floraID)
         {
@@ -79,5 +79,13 @@ namespace WikiFloraAPI.Controllers
             if(flora == null) return NotFound();
             return flora;
         }
+        [HttpDelete("delete/{id}")]
+        public async Task<ActionResult<bool>> Delete(Guid id)
+        {
+            bool success = await _floraService.deleteFlora(id);
+            if (!success) return NotFound("Delete process is not success");
+            return success;
+        }
+
     }
 }

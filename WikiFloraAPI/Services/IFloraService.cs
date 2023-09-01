@@ -12,5 +12,6 @@ namespace WikiFloraAPI.Services
        public Task<Flora?> GetFloraById(Guid id);
         public Task<List<Flora>> GetDisapprovePost();
         public Task<bool> approveFlora(Guid id);
+        public Task<bool> deleteFlora(Guid id);
     }
 }   
