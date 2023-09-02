@@ -65,10 +65,21 @@ namespace WikiFloraAPI.Controllers
             return Ok(success);
         }
         [Authorize]
-        [HttpPut]
-        public async Task<ActionResult<bool>> UpdateFlora(Flora updatedFlora)
+        [HttpPut("update/{id}")]
+        public async Task<ActionResult<bool>> UpdateFlora(Flora updatedFlora,Guid id)
         {
-            bool sucess = await _floraService.UpadateFlora(updatedFlora);
+            Flora? flora = await _floraService.GetFloraById(id);
+            if (flora == null) return false;
+
+            flora.OthersName = updatedFlora.OthersName;
+            flora.ScientificName = updatedFlora.ScientificName;
+            flora.BanglaName = updatedFlora.BanglaName;
+            flora.Description = updatedFlora.Description;
+            flora.Photos = updatedFlora.Photos;
+            flora.Hierarchy = updatedFlora.Hierarchy;
+            flora.Reference = updatedFlora.Reference;
+            
+            bool sucess = await _floraService.UpadateFlora(flora);
             if (!sucess) return BadRequest();
             return sucess;
         }

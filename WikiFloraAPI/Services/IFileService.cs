@@ -7,6 +7,6 @@ namespace WikiFloraAPI.Services
     {
         public Task<string?> upload(IFormFile file);
         public Task<string?> get(string path);
-        public string remove(string? path);
+        public string remove(string path);
     }
 }

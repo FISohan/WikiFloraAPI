@@ -31,10 +31,11 @@ namespace WikiFloraAPI.Controllers
             return Ok(photoUploadResponse);
         }
         [HttpDelete("remove")]
-        public async Task<ActionResult<string>>RemoveFile(string fileName)
+        public ActionResult<PhotoUploadResponseDto>RemoveFile(string fileName)
         {
             string s =  _fileService.remove(fileName);
-            return Ok(s);
+            PhotoUploadResponseDto photoUploadResponse = new PhotoUploadResponseDto { url = fileName };
+            return Ok("Done");
         }
 
     }   

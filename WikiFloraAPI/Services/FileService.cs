@@ -14,6 +14,7 @@ namespace WikiFloraAPI.Services
 
         public string remove(string fileName)
         {
+            
             string directory = Directory.GetCurrentDirectory();
             string filePath = Path.Combine(directory,"FloraPhotos", fileName);
             try { File.Delete(filePath); } catch(Exception ex) { return ex.Message; }
