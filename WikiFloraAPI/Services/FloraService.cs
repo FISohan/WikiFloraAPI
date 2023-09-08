@@ -11,10 +11,12 @@ namespace WikiFloraAPI.Services
     public class FloraService : IFloraService
     {
         private readonly DataContext _context;
+        private readonly IUserService _userService;
 
-    public FloraService(DataContext context)
+        public FloraService(DataContext context,IUserService userService)
         {
             _context = context;
+            _userService = userService;
         }
         private int _GetBanglaAlphabetIndex(string BanglaName)
         {
@@ -106,6 +108,7 @@ namespace WikiFloraAPI.Services
             {
                 return false;
             }
+            await _userService.deductContributionPoint(updatedFlora.Contributer);
             return true;
         }
         public async Task<List<Flora?>> GetFloraListByGenus(int pageNumber, int pageSize)
@@ -178,6 +181,12 @@ namespace WikiFloraAPI.Services
             return floras;
         }
 
+        public async Task<bool> IsExist(string name)
+        {
+            bool isExist = await _context.Floras.AnyAsync(f => f.ScientificName.SpecificEpithet == name);
+            return isExist;
+        }   
+
         public async Task<bool> approveFlora(Guid id)
         {
             Flora? flora = await GetFloraById(id);
@@ -192,6 +201,7 @@ namespace WikiFloraAPI.Services
             {
                 return false;
             }
+            await _userService.addContributionPoint(flora.Contributer);
             return true;
         }
     }

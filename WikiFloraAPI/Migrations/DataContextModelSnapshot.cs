@@ -154,6 +154,9 @@ namespace WikiFloraAPI.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
+                    b.Property<int>("ContributionPoints")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("GivenName")
                         .IsRequired()
                         .HasColumnType("TEXT");

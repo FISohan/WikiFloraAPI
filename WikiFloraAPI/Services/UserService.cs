@@ -29,7 +29,38 @@ namespace WikiFloraAPI.Services
         {
             return await _context.Users.ToListAsync<User>();
         }
-
+        public async Task<bool> addContributionPoint(string id)
+        {
+            User? user = await getUser(id);
+            if(user == null) return false;
+            user.ContributionPoints += 1;
+            _context.Entry(user).State = EntityState.Modified;
+            try
+            {
+               await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                return false;
+            }
+            return true;
+        }
+        public async Task<bool> deductContributionPoint(string id)
+        {
+            User? user = await getUser(id);
+            if (user == null) return false;
+            user.ContributionPoints -= 1;
+            _context.Entry(user).State = EntityState.Modified;
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                return false;
+            }
+            return true;
+        }
         public async Task<User?> getUser(string userId)
         {
             User? user = await _context.Users.FirstOrDefaultAsync( u => u.UserId == userId || u.Name == userId);

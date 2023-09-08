@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WikiFloraAPI.Models;
+using WikiFloraAPI.Models.Dtos;
 using WikiFloraAPI.Services;
 
 namespace WikiFloraAPI.Controllers
@@ -64,6 +65,7 @@ namespace WikiFloraAPI.Controllers
             if(!success) return BadRequest("May Flora ID is not valid");
             return Ok(success);
         }
+
         [Authorize]
         [HttpPut("update/{id}")]
         public async Task<ActionResult<bool>> UpdateFlora(Flora updatedFlora,Guid id)
@@ -118,6 +120,12 @@ namespace WikiFloraAPI.Controllers
             List<Flora> floras = await _floraService.GetFloraByUserAuth(userId);
             return Ok(floras);
         }
-
+        [HttpGet("get/isExist")]
+        public async Task<ActionResult<ExistsModel>> GetFloraIsExist(string name)
+        {
+            bool res = await _floraService.IsExist(name);
+            ExistsModel exists = new ExistsModel{ IsExist = res};
+            return Ok(exists);
+        }
     }
 }

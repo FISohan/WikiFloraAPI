@@ -8,5 +8,6 @@
         public required string GivenName { get; set; }
         public required string Mail { get; set; }
         public string? SocialLink { get; set; }
+        public int ContributionPoints { get; set; }
     }
 }

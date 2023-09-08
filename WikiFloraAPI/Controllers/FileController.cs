@@ -35,7 +35,7 @@ namespace WikiFloraAPI.Controllers
         {
             string s =  _fileService.remove(fileName);
             PhotoUploadResponseDto photoUploadResponse = new PhotoUploadResponseDto { url = fileName };
-            return Ok("Done");
+            return Ok(photoUploadResponse);
         }
 
     }   
