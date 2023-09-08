@@ -40,11 +40,18 @@ namespace WikiFloraAPI.Controllers
             Console.WriteLine(">>>>>>>>" + userId);
             bool existed = await _userService.isUserExist(userId);
             return Ok(existed);
-        }
+        } 
         [HttpPost]
         public async Task<ActionResult<User>>AddUser(User user)
         {
             return  Ok( await _userService.addUser(user));
+        } 
+
+        [HttpGet("topContributer")]
+        public async Task<ActionResult<List<User>>> GetTopContributer()
+        {
+            return Ok(await _userService.getTopContributers());
         }
+
     }
 }

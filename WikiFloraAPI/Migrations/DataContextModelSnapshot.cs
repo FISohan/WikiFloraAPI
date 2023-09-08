@@ -17,6 +17,32 @@ namespace WikiFloraAPI.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.9");
 
+            modelBuilder.Entity("WikiFloraAPI.Models.Comment", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("CommentBody")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("FloraId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Comments");
+                });
+
             modelBuilder.Entity("WikiFloraAPI.Models.Flora", b =>
                 {
                     b.Property<Guid>("Id")
@@ -123,6 +149,29 @@ namespace WikiFloraAPI.Migrations
                     b.ToTable("Photo");
                 });
 
+            modelBuilder.Entity("WikiFloraAPI.Models.Reply", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("CommentId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ReplyBody")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CommentId");
+
+                    b.ToTable("Replies");
+                });
+
             modelBuilder.Entity("WikiFloraAPI.Models.ScientificName", b =>
                 {
                     b.Property<Guid>("Id")
@@ -199,6 +248,15 @@ namespace WikiFloraAPI.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("WikiFloraAPI.Models.Reply", b =>
+                {
+                    b.HasOne("WikiFloraAPI.Models.Comment", null)
+                        .WithMany("Replies")
+                        .HasForeignKey("CommentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("WikiFloraAPI.Models.ScientificName", b =>
                 {
                     b.HasOne("WikiFloraAPI.Models.Flora", null)
@@ -206,6 +264,11 @@ namespace WikiFloraAPI.Migrations
                         .HasForeignKey("WikiFloraAPI.Models.ScientificName", "FloraId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("WikiFloraAPI.Models.Comment", b =>
+                {
+                    b.Navigation("Replies");
                 });
 
             modelBuilder.Entity("WikiFloraAPI.Models.Flora", b =>

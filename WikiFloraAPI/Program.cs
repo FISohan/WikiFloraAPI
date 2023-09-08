@@ -25,6 +25,7 @@ builder.Services.AddDbContext<DataContext>();
 builder.Services.AddScoped<IFloraService, FloraService>();
 builder.Services.AddScoped<IFileService, FileService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<ICommentService,  CommentService>();
 builder.Services.AddTransient<IClaimsTransformation,KeycloakClaimsTransformation>();
 
 builder.Services.AddCors(options =>

@@ -6,8 +6,6 @@ using WikiFloraAPI.Models;
 namespace WikiFloraAPI.Services
 {
 
-
-
     public class FloraService : IFloraService
     {
         private readonly DataContext _context;
@@ -72,12 +70,6 @@ namespace WikiFloraAPI.Services
             int index = banglaAlphabetUnicodeChars.FindIndex(e => e == firstAlphabet);
             return index;
         }
-
-     /*   private int __GetEnglishAlphabetIndex(string EnglishName)
-        {
-            char firstAlphabet = EnglishName.ToLower().Replace(" ", "").First();
-            int index = 26 + (Encoding.ASCII.GetBytes("z") - Encoding.ASCII.GetBytes(firstAlphabet));
-        }*/
     
         public async Task<int> FloraCount()
         {

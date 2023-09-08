@@ -12,5 +12,6 @@ namespace WikiFloraAPI.Services
         public Task<bool>isUserExist(string userId);
         public Task<bool> deductContributionPoint(string id);
         public Task<bool> addContributionPoint(string id);
+        public Task<List<User>> getTopContributers();
     }
 }

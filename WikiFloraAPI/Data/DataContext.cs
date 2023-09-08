@@ -14,7 +14,9 @@ namespace WikiFloraAPI.Data
             optionsBuilder.UseSqlite(_configuration.GetConnectionString("sqliteConnectionString"));
             base.OnConfiguring(optionsBuilder);
         }
-        public DbSet<Flora>Floras { get; set; }
+        public DbSet<Flora> Floras { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<Comment> Comments { get; set; }
+        public DbSet<Reply> Replies { get; set; }
     }
 }

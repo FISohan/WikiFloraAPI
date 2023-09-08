@@ -72,7 +72,11 @@ namespace WikiFloraAPI.Services
             bool x = await _context.Users.AnyAsync(u => u.UserId == userId);
             return x;
         }
-
+        public async Task<List<User>> getTopContributers()
+        {
+            List<User> users = await _context.Users.OrderBy(u => u.ContributionPoints).ToListAsync();
+            return users;
+        }
         public Task<UserDto> updateUser(UserDto user)
         {
             throw new NotImplementedException();
