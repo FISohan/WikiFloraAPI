@@ -53,7 +53,12 @@ namespace WikiFloraAPI.Services
         }
        public async Task<bool> Reply(ReplyDto newReply)
        {
-            Reply reply = new Reply { CommentId = newReply.CommentId, ReplyBody = newReply.ReplyBody };
+            Reply reply = new Reply { 
+                CommentId = newReply.CommentId,
+                ReplyBody = newReply.ReplyBody,
+                ReplyerId = newReply.ReplyerId
+            };
+
             await _context.Replies.AddAsync(reply);
             try
             {
