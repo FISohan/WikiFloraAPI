@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WikiFloraAPI.Models;
 using WikiFloraAPI.Models.Dtos;
@@ -22,18 +23,34 @@ namespace WikiFloraAPI.Controllers
         {
             return Ok( await _commentService.GetAllComment(florId));
         }
+
         [HttpPost("post")]
         public async Task<ActionResult<bool>> PostComment(CommentDto comment)
         {
+            bool? isAtuth = User.Identity?.IsAuthenticated;
+            if (isAtuth is not true) comment.UserId = "Anonymous";
+            else
+            {
+                string userId = ClaimService.getClaimData(User.Claims).sub;
+                comment.UserId = userId;
+            }
             bool success = await _commentService.AddComment(comment);
             if (!success) return NoContent();
             return Ok(success);
         }
+
         [HttpPost("reply")]
         public async Task<ActionResult<bool>> Reply(ReplyDto replyDto)
         {
+            bool? isAtuth = User.Identity?.IsAuthenticated;
+            if (isAtuth is null || isAtuth is not true) replyDto.ReplyerId = "Anonymous";
+            else
+            {
+                string userId = ClaimService.getClaimData(User.Claims).sub;
+                replyDto.ReplyerId = userId;
+            }
             bool sucess = await _commentService.Reply(replyDto);
-            if (!sucess) return NoContent();
+            if (!sucess) return BadRequest();
             return Ok(sucess); 
         }
         [Authorize("Admin")]

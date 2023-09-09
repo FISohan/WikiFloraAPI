@@ -22,7 +22,7 @@ namespace WikiFloraAPI.Services
         }
         public async Task<bool> AddComment(CommentDto newComment)
         {
-            Comment comment = new Comment { CommentBody = newComment.CommentBody, FloraId = newComment.FloraId};
+            Comment comment = new Comment { CommentBody = newComment.CommentBody, FloraId = newComment.FloraId,UserId = newComment.UserId};
             await _context.Comments.AddAsync(comment);
             try
             {

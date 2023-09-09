@@ -35,7 +35,6 @@ namespace WikiFloraAPI.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("UserId")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
@@ -166,7 +165,6 @@ namespace WikiFloraAPI.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("ReplyerId")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
