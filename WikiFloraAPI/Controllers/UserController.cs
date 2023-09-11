@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using WikiFloraAPI.Models;
+using WikiFloraAPI.Models.Dtos;
 using WikiFloraAPI.Services;
 
 namespace WikiFloraAPI.Controllers
@@ -51,6 +52,14 @@ namespace WikiFloraAPI.Controllers
         public async Task<ActionResult<List<User>>> GetTopContributer()
         {
             return Ok(await _userService.getTopContributers());
+        }
+        [Authorize]
+        [HttpPut("update")]
+        public async Task<ActionResult<bool>>UpdateUser(UserDto newUser)
+        {
+            string userId = ClaimService.getClaimData(User.Claims).sub;
+            newUser.UserId = userId;
+            return Ok(await _userService.updateUser(newUser));
         }
 
     }

@@ -55,11 +55,18 @@ namespace WikiFloraAPI.Controllers
         }
         [Authorize("Admin")]
         [HttpDelete]
-        public async Task<ActionResult<bool>> DeleteComment(string commentId)
+        public async Task<ActionResult<bool>> DeleteComment(Guid commentId)
         {
             bool sucess = await _commentService.Delete(commentId);
             if (!sucess) return NoContent();
             return Ok(sucess);
+        }
+        [Authorize("Admin")]
+        [HttpDelete("reply/delete")]
+        public async Task<ActionResult<bool>> DeleteReply(Guid replyId) {
+            bool res = await _commentService.DeleteReply(replyId);
+            if (!res) return NoContent();
+            return Ok(res);
         }
     }
 }

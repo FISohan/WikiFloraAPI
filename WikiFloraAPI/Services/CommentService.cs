@@ -33,12 +33,12 @@ namespace WikiFloraAPI.Services
             }
             return true;
         }
-        public async Task<Comment>GetComentById(string id)
+        public async Task<Comment>GetComentById(Guid id)
         {
-            Comment comment = await _context.Comments.FirstAsync(c => c.Id.Equals(id));
+            Comment comment = await _context.Comments.FirstAsync(c => c.Id == id);
             return comment;
         }
-        public async Task<bool> Delete(string commentId)
+        public async Task<bool> Delete(Guid commentId)
         {
             Comment comment = await GetComentById(commentId);
             _context.Comments.Remove(comment);
@@ -51,7 +51,27 @@ namespace WikiFloraAPI.Services
             }
             return true;
         }
-       public async Task<bool> Reply(ReplyDto newReply)
+        public async Task<bool>DeleteReply(Guid replyId)
+        {
+            Reply reply = await GetReplyById(replyId);
+            _context.Replies.Remove(reply);
+            try
+            {
+                await _context.SaveChangesAsync();
+            }catch (Exception ex)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        public async Task<Reply> GetReplyById(Guid replyId)
+        {
+            Reply r = await _context.Replies.FirstAsync(c => c.Id == replyId);
+            return r;
+        }
+
+        public async Task<bool> Reply(ReplyDto newReply)
        {
             Reply reply = new Reply { 
                 CommentId = newReply.CommentId,

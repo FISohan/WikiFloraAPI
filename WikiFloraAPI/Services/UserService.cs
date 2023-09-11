@@ -61,9 +61,9 @@ namespace WikiFloraAPI.Services
             }
             return true;
         }
-        public async Task<User?> getUser(string userId)
+        public async Task<User> getUser(string userId)
         {
-            User? user = await _context.Users.FirstOrDefaultAsync( u => u.UserId == userId || u.Name == userId);
+            User user = await _context.Users.FirstAsync( u => u.UserId == userId || u.Name == userId);
             return user;
         }
 
@@ -77,9 +77,22 @@ namespace WikiFloraAPI.Services
             List<User> users = await _context.Users.OrderBy(u => u.ContributionPoints).ToListAsync();
             return users;
         }
-        public Task<UserDto> updateUser(UserDto user)
+        public async Task<bool> updateUser(UserDto newUser)
         {
-            throw new NotImplementedException();
+            User user = await getUser(newUser.UserId);
+            user.GivenName = newUser.GivenName;
+            user.SocialLink = newUser.SocialLink;
+            user.Mail = newUser.Mail;
+            _context.Entry(user).State = EntityState.Modified;
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                return false;
+            }
+            return true;
         }
         
     }
