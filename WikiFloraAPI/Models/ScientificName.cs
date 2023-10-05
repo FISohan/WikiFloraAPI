@@ -7,5 +7,7 @@
         Flora Flora { get; set; }
         public required string Genus { get; set; }
         public required string SpecificEpithet { get; set; }
+        public string? OthersPart { get; set; }
     }
 }
+ 

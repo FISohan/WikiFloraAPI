@@ -17,5 +17,6 @@ namespace WikiFloraAPI.Services
         public Task<List<Flora>> GetFloraByUserAuth(string id);
         public Task<bool> UpadateFlora(Flora updatedFlora);
         public Task<bool> IsExist(string name);
+        public Task<List<Flora>> SearchByName(string query);
     }
 }   

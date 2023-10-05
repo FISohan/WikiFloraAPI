@@ -187,6 +187,9 @@ namespace WikiFloraAPI.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("OthersPart")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("SpecificEpithet")
                         .IsRequired()
                         .HasColumnType("TEXT");

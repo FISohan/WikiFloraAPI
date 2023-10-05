@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System.Text;
 using WikiFloraAPI.Data;
 using WikiFloraAPI.Models;
 
@@ -70,7 +69,9 @@ namespace WikiFloraAPI.Services
             int index = banglaAlphabetUnicodeChars.FindIndex(e => e == firstAlphabet);
             return index;
         }
-    
+   
+
+      
         public async Task<int> FloraCount()
         {
             return await _context.Floras.CountAsync();
@@ -196,5 +197,11 @@ namespace WikiFloraAPI.Services
             await _userService.addContributionPoint(flora.Contributer);
             return true;
         }
+
+        public async Task<List<Flora>> SearchByName(string SearchQuery)
+        {
+        var data = await _context.Floras.AsAsyncEnumerable().Where(f => BiGram.similarity(f.OthersName, SearchQuery) >= 0.0 || BiGram.similarity(f.BanglaName, SearchQuery) >= 0.0 || BiGram.similarity(f.ScientificName.Genus, SearchQuery) >= 0.0).ToListAsync();
+        return data;
+        } 
     }
 }

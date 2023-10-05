@@ -16,19 +16,19 @@ namespace WikiFloraAPI.Controllers
         {
             _floraService = floraService;
         }
-        [HttpGet("Get/pageNumber={pageNumber:int}&pageSize={pageSize:int}&orderByGenus={orderByGenus:bool}")]
-        public async Task<ActionResult<Page<Flora>>> GetAll(int pageSize, int pageNumber,bool orderByGenus)
+        [HttpGet("Get/pageNumber={pageNumber:int}&pageSize={pageSize:int}")]
+        public async Task<ActionResult<Page<Flora>>> GetAll(int pageSize, int pageNumber)
         {
             int _floraListSize = await _floraService.FloraCount();
             int maxPageNumber = (_floraListSize % pageSize == 0)
                                ? _floraListSize / pageSize
                                : (_floraListSize / pageSize) + 1;
             List<Flora?> floras = await _floraService.GetFloraList(pageNumber, pageSize);
-            if (orderByGenus) floras = await _floraService.GetFloraListByGenus(pageNumber, pageSize);
+            floras = await _floraService.GetFloraListByGenus(pageNumber, pageSize);
 
-            Page<Flora> _page = new Page<Flora>{ Data = floras!,
-                                        currentPageIndex = pageNumber,
-                                        MaxPageIndex = maxPageNumber - 1 };
+            Page<Flora> _page = new Page<Flora> { Data = floras!,
+                currentPageIndex = pageNumber,
+                MaxPageIndex = maxPageNumber - 1 };
 
             return Ok(_page);
         }
@@ -42,7 +42,7 @@ namespace WikiFloraAPI.Controllers
         public async Task<ActionResult<Flora?>> GetFloraByName(string banglaName)
         {
             Flora? flora = await _floraService.GetFloraByName(banglaName);
-            if(flora == null) return NotFound();
+            if (flora == null) return NotFound();
             return Ok(flora);
         }
 
@@ -58,17 +58,17 @@ namespace WikiFloraAPI.Controllers
 
         [Authorize("Admin")]
         [HttpPut("aprrove")]
-        public async Task<ActionResult<bool>>ApproveFlora(Guid floraID)
+        public async Task<ActionResult<bool>> ApproveFlora(Guid floraID)
         {
             Console.WriteLine(">>hhh>>>" + floraID);
             bool success = await _floraService.approveFlora(floraID);
-            if(!success) return BadRequest("May Flora ID is not valid");
+            if (!success) return BadRequest("May Flora ID is not valid");
             return Ok(success);
         }
 
         [Authorize]
         [HttpPut("update/{id}")]
-        public async Task<ActionResult<bool>> UpdateFlora(Flora updatedFlora,Guid id)
+        public async Task<ActionResult<bool>> UpdateFlora(Flora updatedFlora, Guid id)
         {
             Flora? flora = await _floraService.GetFloraById(id);
             if (flora == null) return false;
@@ -80,7 +80,7 @@ namespace WikiFloraAPI.Controllers
             flora.Photos = updatedFlora.Photos;
             flora.Hierarchy = updatedFlora.Hierarchy;
             flora.Reference = updatedFlora.Reference;
-            
+
             bool sucess = await _floraService.UpadateFlora(flora);
             if (!sucess) return BadRequest();
             return sucess;
@@ -95,7 +95,7 @@ namespace WikiFloraAPI.Controllers
         public async Task<ActionResult<Flora>> GetById(Guid floraId)
         {
             Flora? flora = await _floraService.GetFloraById(floraId);
-            if(flora == null) return NotFound();
+            if (flora == null) return NotFound();
             return flora;
         }
         [HttpDelete("delete/{id}")]
@@ -124,8 +124,12 @@ namespace WikiFloraAPI.Controllers
         public async Task<ActionResult<ExistsModel>> GetFloraIsExist(string name)
         {
             bool res = await _floraService.IsExist(name);
-            ExistsModel exists = new ExistsModel{ IsExist = res};
+            ExistsModel exists = new ExistsModel { IsExist = res };
             return Ok(exists);
+        }
+        [HttpGet("search/name={query}")]
+        public async Task<ActionResult<List<Flora>>> Search(string query){
+            return Ok(await _floraService.SearchByName(query));
         }
     }
 }
