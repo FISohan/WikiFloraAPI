@@ -27,7 +27,7 @@ namespace WikiFloraAPI.Services
         
         public async Task<List<User>> getAllUser()
         {
-            return await _context.Users.ToListAsync<User>();
+            return await _context.Users.OrderByDescending(u => u.ContributionPoints).ToListAsync<User>();
         }
         public async Task<bool> addContributionPoint(string id)
         {
@@ -74,7 +74,7 @@ namespace WikiFloraAPI.Services
         }
         public async Task<List<User>> getTopContributers()
         {
-            List<User> users = await _context.Users.OrderBy(u => u.ContributionPoints).ToListAsync();
+            List<User> users = await _context.Users.OrderByDescending(u => u.ContributionPoints).ToListAsync();
             return users;
         }
         public async Task<bool> updateUser(UserDto newUser)

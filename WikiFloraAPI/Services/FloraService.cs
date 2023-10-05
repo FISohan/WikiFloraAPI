@@ -200,7 +200,13 @@ namespace WikiFloraAPI.Services
 
         public async Task<List<Flora>> SearchByName(string SearchQuery)
         {
-        var data = await _context.Floras.AsAsyncEnumerable().Where(f => BiGram.similarity(f.OthersName, SearchQuery) >= 0.0 || BiGram.similarity(f.BanglaName, SearchQuery) >= 0.0 || BiGram.similarity(f.ScientificName.Genus, SearchQuery) >= 0.0).ToListAsync();
+            const double matchingPercent = 0.4;
+            var data = await _context.Floras
+                    .Include(f => f.Photos)
+                    .Include(f => f.ScientificName)
+                    .AsAsyncEnumerable()
+                    .Where(f => BiGram.similarity(f.OthersName, SearchQuery) >= matchingPercent || BiGram.similarity(f.BanglaName, SearchQuery) >= matchingPercent || BiGram.similarity(f.ScientificName.Genus, SearchQuery) >= matchingPercent)
+                    .ToListAsync();
         return data;
         } 
     }
